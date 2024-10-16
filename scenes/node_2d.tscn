@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://d2deqh7mfuhuy"]
+[gd_scene load_steps=4 format=3 uid="uid://d2deqh7mfuhuy"]
 
 [ext_resource type="Texture2D" uid="uid://bxl2phk8xmv78" path="res://assets/player_ship.png" id="1_ogmw7"]
+[ext_resource type="Script" path="res://scenes/player.gd" id="1_pp2su"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_igr6g"]
 radius = 30.0666
 
-[node name="Player" type="Node2D"]
+[node name="Player" type="RigidBody2D"]
+script = ExtResource("1_pp2su")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
@@ -17,3 +19,4 @@ metadata/_edit_group_ = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 texture_filter = 1
 shape = SubResource("CircleShape2D_igr6g")
+metadata/_edit_group_ = true

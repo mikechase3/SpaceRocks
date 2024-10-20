@@ -24,6 +24,7 @@ func _process(delta):
 func _ready():
 	change_state(ALIVE)
 	screensize = get_viewport_rect().size
+	#print(transform)  # is this a builtin? WOW IT IS!!! 
 
 
 func _physics_process(delta):
@@ -50,6 +51,7 @@ func change_state(new_state):
 			#linear_velocity = Vector2.ZERO
 			#dead.emit()
 	state = new_state
+	print("test")
 
 
 

@@ -2,8 +2,11 @@ extends RigidBody2D
 
 @export var engine_power = 500
 @export var spin_power = 8000
+@export var bullet_scene: PackedScene
+@export var fire_rate: float = 0.25
 
-enum {INIT, ALIVE, INVULNERABLE, DEAD}  # these aren't strings? What is data type?
+enum {INIT, ALIVE, INVULNERABLE, DEAD}
+var can_shoot = true
 var state = INIT
 var thrust = Vector2.ZERO
 var rotation_dir = 0
@@ -15,7 +18,9 @@ func _integrate_forces(physics_state):
 	xform.origin.y = wrapf(xform.origin.y, 0, screensize.y)
 	physics_state.transform = xform
 	
-	
+func _on_gun_cooldown_timeout() -> void:
+	can_shoot = true
+
 
 func _process(delta):
 	get_input()
@@ -24,6 +29,7 @@ func _process(delta):
 func _ready():
 	change_state(ALIVE)
 	screensize = get_viewport_rect().size
+	$GunCooldown.wait_time = fire_rate
 	#print(transform)  # is this a builtin? WOW IT IS!!! 
 
 
@@ -66,6 +72,8 @@ func get_input():
 		#$Exhaust.emitting = true
 		#if not $EngineSound.playing:
 			#$EngineSound.play()
+	if Input.is_action_pressed("shoot") and can_shoot:
+		shoot()
 	else:
 		pass
 		#$EngineSound.stop()
@@ -73,3 +81,12 @@ func get_input():
 	#if Input.is_action_pressed("shoot") and can_shoot:
 		#shoot()
 		
+func shoot():
+	if state == INVULNERABLE:
+		return
+	else:
+		can_shoot = false
+		$GunCooldown.start()
+		var b = bullet_scene.instantiate()  # new bullet to scene
+		get_tree().root.add_child(b)  # adds bullet to player's parent, the root.
+		b.start($Muzzle.global_transform)  # Passes muzzle's transform.

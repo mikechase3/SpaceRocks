@@ -57,7 +57,6 @@ func change_state(new_state):
 			#linear_velocity = Vector2.ZERO
 			#dead.emit()
 	state = new_state
-	print("test")
 
 
 

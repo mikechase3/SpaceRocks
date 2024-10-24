@@ -8,6 +8,11 @@ signal start_game
 @onready var message: Label = $VBoxContainer/Message 
 @onready var start_button: TextureButton = $VBoxContainer/StartButton 
 
+func game_over():
+	show_message("Game Over")
+	await $Timer.timeout
+	start_button.show()
+
 func show_message(text):
 	message.text = text
 	message.show()
@@ -20,11 +25,6 @@ func update_score(value):
 func update_lives(value):
 	for item in 3:  # TODO exercise: make variable amount of lives.
 		lives_counter[item].visible = value > item
-
-func game_over():
-	show_message("Game Over")
-	await $Timer.timeout
-	start_button.show()
 
 
 func _on_start_button_pressed() -> void:

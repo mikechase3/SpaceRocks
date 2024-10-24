@@ -12,11 +12,25 @@ var thrust = Vector2.ZERO
 var rotation_dir = 0
 var screensize = Vector2.ZERO  # Book/Slide says Vector.ZERO
 
+var reset_pos = false 
+# When value of lives changes, set_lives() will be called -> A "Setter Function"
+var lives = 0: set = set_lives # Alllows validation, trigger, protect/private, etc
+
+signal lives_changed
+signal dead
+
+
 func _integrate_forces(physics_state):
 	var xform = physics_state.transform
 	xform.origin.x = wrapf(xform.origin.x, 0, screensize.x)
 	xform.origin.y = wrapf(xform.origin.y, 0, screensize.y)
 	physics_state.transform = xform
+	
+	# Set position back to zero; used with reset()
+	if reset_pos:
+		physics_state.transform.origin = screensize / 2
+		reset_pos = false
+	
 	
 func _on_gun_cooldown_timeout() -> void:
 	can_shoot = true
@@ -31,11 +45,13 @@ func _ready():
 	screensize = get_viewport_rect().size
 	$GunCooldown.wait_time = fire_rate
 	#print(transform)  # is this a builtin? WOW IT IS!!! 
+	
 
 
 func _physics_process(delta):
 	constant_force = thrust
 	constant_torque = rotation_dir * spin_power
+
 
 
 func change_state(new_state):
@@ -79,6 +95,24 @@ func get_input():
 	rotation_dir = Input.get_axis("rotate_left", "rotate_right")
 	#if Input.is_action_pressed("shoot") and can_shoot:
 		#shoot()
+		
+func reset():
+	reset_pos  = true
+	$Sprite2D.show()
+	lives = 3
+	change_state(ALIVE)
+		
+#func reset():  # called from main
+func set_lives(value):
+	lives = value
+	lives_changed.emit(lives)
+	if lives <= 0:
+		change_state(DEAD)
+	else:
+		change_state(INVULNERABLE)
+		
+	
+
 		
 func shoot():
 	if state == INVULNERABLE:

@@ -30,10 +30,19 @@ func _integrate_forces(physics_state):
 	if reset_pos:
 		physics_state.transform.origin = screensize / 2
 		reset_pos = false
-	
+
+func _on_body_entered(body: Node) -> void:
+	if body.is_in_group("rocks"):
+		body.explode()
+		lives -= 1
+		explode()
+
 	
 func _on_gun_cooldown_timeout() -> void:
 	can_shoot = true
+
+func _on_invulnerability_timer_timeout() -> void:
+	change_state(ALIVE)
 
 
 func _process(delta):
@@ -58,23 +67,27 @@ func change_state(new_state):
 	match new_state:
 		INIT:
 			$CollisionShape2d.set_deferred("disabled", true)
-			#$Sprite2d.modulate.a = 0.5  # Not yet
+			$Sprite2D.modulate.a = 0.5  # Not yet
 		ALIVE:
 			$CollisionShape2d.set_deferred("disabled", false)
-			#$Sprite2d.modulate.a = 1.0
+			$Sprite2D.modulate.a = 1.0
 		INVULNERABLE:
 			$CollisionShape2d.set_deferred("disabled", true)
-			#$Sprite2d.modulate.a = 0.5
-			#$InvulnerabilityTimer.start()
+			$Sprite2D.modulate.a = 0.5
+			$InvulnerabilityTimer.start()
 		DEAD:
 			$CollisionShape2d.set_deferred("disabled", true)
-			#$Sprite2d.hide()
+			$Sprite2D.hide()
 			#$EngineSound.stop()
-			#linear_velocity = Vector2.ZERO
-			#dead.emit()
+			linear_velocity = Vector2.ZERO
+			dead.emit()
 	state = new_state
 
-
+func explode():
+	$Explosion.show()
+	$Explosion/AnimationPlayer.play("explosion")
+	await $Explosion/AnimationPlayer.animation_finished  # awaiting what?
+	$Explosion.hide()
 
 	
 func get_input():
@@ -95,6 +108,8 @@ func get_input():
 	rotation_dir = Input.get_axis("rotate_left", "rotate_right")
 	#if Input.is_action_pressed("shoot") and can_shoot:
 		#shoot()
+		
+
 		
 func reset():
 	reset_pos  = true

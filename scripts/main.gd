@@ -2,13 +2,40 @@ extends Node
 
 
 @export var rock_scene: PackedScene
+@export var enemy_scene: PackedScene
+
 var screensize = Vector2.ZERO
 var level: int = 0
 var score: int = 0
 var playing: bool = false
 
+func _input(event):
+	if event.is_action_pressed("pause"):
+		if not playing:
+			return
+			
+		get_tree().paused = not get_tree().paused  # ERR
+		var message = $HUD/VBoxContainer/Message
+		if get_tree().paused:
+			message.text = "Paused"
+			message.show()
+		else:
+			message.text = ""
+			message.hide()
+
+func _on_enemy_timer_timeout() -> void:
+	var e = enemy_scene.instantiate()
+	add_child(e)
+	e.target = $Player
+	$EnemyTimer.start(randf_range(20, 40))
+	
+
 func _on_hud_start_game() -> void:
 	new_game()
+
+func _on_player_dead() -> void:
+	game_over()
+
 
 func _on_rock_exploded(size, radius, pos, vel):
 	if size <= 1:
@@ -50,9 +77,13 @@ func new_game():
 	
 func new_level():
 	level += 1
-	$HUD.show_message("Wave %s" % level) ##or space inbetween?
-	for i in level:
-		spawn_rock(3)
+	var numRocksToSpawn: int = 2+level
+	$HUD.show_message("Wave %s" % level)
+	for i in numRocksToSpawn:
+		print("Spawning level")
+		spawn_rock(3)  #size=3, not three times
+		
+	$EnemyTimer.start(randf_range(5, 10))
 	
 
 

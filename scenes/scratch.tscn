@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhr8bbopalq6a"]
+
+[ext_resource type="Script" path="res://scripts/scratch.gd" id="1_g0tj3"]
+
+[node name="scratch" type="Node"]
+script = ExtResource("1_g0tj3")

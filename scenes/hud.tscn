@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://b5ei4ervn8yvb"]
 
-[ext_resource type="Script" path="res://scenes/hud.gd" id="1_ur0ym"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_ur0ym"]
 [ext_resource type="FontFile" uid="uid://bd57y7kknfnsw" path="res://assets/kenvector_future_thin.ttf" id="1_v8nks"]
 [ext_resource type="Texture2D" uid="uid://bh1nlmqgys35b" path="res://assets/player_small.png" id="2_onh0y"]
 [ext_resource type="Texture2D" uid="uid://3rfvrh24d4lr" path="res://assets/play_button_h.png" id="3_4htc0"]
@@ -75,7 +75,8 @@ horizontal_alignment = 1
 
 [node name="StartButton" type="TextureButton" parent="VBoxContainer"]
 layout_mode = 2
-texture_pressed = ExtResource("3_22rp1")
+size_flags_horizontal = 4
+texture_normal = ExtResource("3_22rp1")
 texture_hover = ExtResource("3_4htc0")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

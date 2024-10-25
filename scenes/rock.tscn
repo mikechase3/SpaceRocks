@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://biofhmp8l0gb"]
 
 [ext_resource type="Texture2D" uid="uid://c6exsoguj60if" path="res://assets/rock.png" id="1_6a8p1"]
-[ext_resource type="Script" path="res://scenes/rock.gd" id="1_d4it0"]
+[ext_resource type="Script" path="res://scripts/rock.gd" id="1_d4it0"]
 [ext_resource type="PackedScene" uid="uid://c10mc3b4gli04" path="res://scenes/explosion.tscn" id="3_kc0mt"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_l8m3u"]
@@ -19,3 +19,4 @@ texture = ExtResource("1_6a8p1")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 
 [node name="Explosion" parent="." instance=ExtResource("3_kc0mt")]
+visible = false

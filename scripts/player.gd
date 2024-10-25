@@ -1,9 +1,13 @@
 extends RigidBody2D
 
+signal shield_changed
+
 @export var engine_power = 500
 @export var spin_power = 8000
 @export var bullet_scene: PackedScene
 @export var fire_rate: float = 0.25
+@export var max_shield = 100.0
+@export var shield_regen = 5.0
 
 enum {INIT, ALIVE, INVULNERABLE, DEAD}
 var can_shoot = true
@@ -11,6 +15,7 @@ var state = INIT
 var thrust = Vector2.ZERO
 var rotation_dir = 0
 var screensize = Vector2.ZERO  # Book/Slide says Vector.ZERO
+var shield = 0: set = set_shield
 
 var reset_pos = false 
 # When value of lives changes, set_lives() will be called -> A "Setter Function"
@@ -36,6 +41,11 @@ func _on_body_entered(body: Node) -> void:
 		body.explode()
 		lives -= 1
 		explode()
+	#if body.is_in_group("enemies"):  # enemy isn't a body... huh.
+		##body.explode()
+		#lives -=1
+		#explode()
+	
 
 	
 func _on_gun_cooldown_timeout() -> void:
@@ -127,7 +137,13 @@ func set_lives(value):
 		change_state(INVULNERABLE)
 		
 	
-
+func set_shield(value):
+	value = min(value, max_shield)
+	shield = value
+	shield_changed.emit(shield / max_shield)
+	if shield <= 0:
+		lives -= 1
+		explode()
 		
 func shoot():
 	if state == INVULNERABLE:

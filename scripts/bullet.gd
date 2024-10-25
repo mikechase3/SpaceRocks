@@ -19,6 +19,15 @@ func start(_transform):
 
 
 func _on_bullet_body_entered(body: Node2D) -> void:
+	#print("bullet body intersected:  " + body.name)
 	if body.is_in_group("rocks"):
 		body.explode()
+		queue_free()
+	#if body.is_in_group("enemies"):  # DOESNT GET CALLED
+		#body.take_damage(1)  # in enemy script.
+		
+func _on_area_entered(area):
+	print("bullet body intersected %s" % area.name)
+	if area.is_in_group("enemies"):
+		area.take_damage(1)
 		queue_free()

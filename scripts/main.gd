@@ -27,6 +27,7 @@ func _on_enemy_timer_timeout() -> void:
 	var e = enemy_scene.instantiate()
 	add_child(e)
 	e.target = $Player
+	
 	$EnemyTimer.start(randf_range(20, 40))
 	
 
@@ -80,7 +81,6 @@ func new_level():
 	var numRocksToSpawn: int = 2+level
 	$HUD.show_message("Wave %s" % level)
 	for i in numRocksToSpawn:
-		print("Spawning level")
 		spawn_rock(3)  #size=3, not three times
 		
 	$EnemyTimer.start(randf_range(5, 10))

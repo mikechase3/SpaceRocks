@@ -97,6 +97,7 @@ func change_state(new_state):
 			#$EngineSound.stop()
 			linear_velocity = Vector2.ZERO
 			dead.emit()
+			$EngineSound.stop()
 	state = new_state
 
 func explode():
@@ -107,15 +108,19 @@ func explode():
 
 	
 func get_input():
+	$Exhaust.emitting = false
 	thrust = Vector2.ZERO  # bug fixed - need it here.
 	#$Exhaust.emitting = false
 	if state in [DEAD, INIT]:
 		return
 	if Input.is_action_pressed("thrust"):
+		$Exhaust.emitting = true
 		thrust = transform.x * engine_power
 		#$Exhaust.emitting = true
-		#if not $EngineSound.playing:
-			#$EngineSound.play()
+		if not $EngineSound.playing:
+			$EngineSound.play()
+		else:
+			$EngineSound.stop()
 	if Input.is_action_pressed("shoot") and can_shoot:
 		shoot()
 	else:
@@ -163,3 +168,4 @@ func shoot():
 		var b = bullet_scene.instantiate()  # new bullet to scene
 		get_tree().root.add_child(b)  # adds bullet to player's parent, the root.
 		b.start($Muzzle.global_transform)  # Passes muzzle's transform.
+		$LaserSound.play()

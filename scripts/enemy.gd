@@ -55,6 +55,7 @@ func explode():
 	$Sprite2D.hide()
 	$Explosion.show()
 	$Explosion/AnimationPlayer.play("explosion")
+	$ExplosionSound.play()
 	await $Explosion/AnimationPlayer.animation_finished
 	queue_free()
 	
@@ -76,5 +77,6 @@ func take_damage(amount):
 func shoot_pulse(n, delay):
 	for i in n:  # like i=0; i < n; i++ where n is an iterable with delay sections btw them.
 		shoot()
+		$ShootSound.play()
 		await get_tree().create_timer(delay).timeout  # Makes a timer. Acts upon being timed out.
 		

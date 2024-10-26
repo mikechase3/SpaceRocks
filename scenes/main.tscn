@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bwaocoq1dpodo"]
+[gd_scene load_steps=11 format=3 uid="uid://bwaocoq1dpodo"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_omu8m"]
 [ext_resource type="PackedScene" uid="uid://d2deqh7mfuhuy" path="res://scenes/player.tscn" id="2_1n2qh"]
@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://c1cym2lgx1tup" path="res://scenes/enemy.tscn" id="3_br0fv"]
 [ext_resource type="Texture2D" uid="uid://7deklstw4apl" path="res://assets/space_background.png" id="3_d7vg5"]
 [ext_resource type="PackedScene" uid="uid://b5ei4ervn8yvb" path="res://scenes/hud.tscn" id="5_d2dc3"]
+[ext_resource type="AudioStream" uid="uid://cakvnuk2as6uh" path="res://assets/sounds/explosion.wav" id="7_i3vlw"]
+[ext_resource type="AudioStream" uid="uid://xvdwjrx2873" path="res://assets/sounds/levelup.ogg" id="8_v0ao1"]
+[ext_resource type="AudioStream" uid="uid://inhf0607mllh" path="res://assets/sounds/Funky-Gameplay_Looping.ogg" id="9_r6axo"]
 
 [sub_resource type="Curve2D" id="Curve2D_gwu7j"]
 _data = {
@@ -26,6 +29,8 @@ texture = ExtResource("3_d7vg5")
 [node name="Player" parent="." instance=ExtResource("2_1n2qh")]
 visible = true
 position = Vector2(168, 104)
+linear_damp = 0.8
+angular_damp = 3.0
 
 [node name="RockPath" type="Path2D" parent="."]
 curve = SubResource("Curve2D_gwu7j")
@@ -38,7 +43,17 @@ metadata/_edit_group_ = true
 [node name="EnemyTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="ExplosionSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_i3vlw")
+
+[node name="LevelupSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_v0ao1")
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_r6axo")
+
 [connection signal="dead" from="Player" to="." method="_on_player_dead"]
 [connection signal="lives_changed" from="Player" to="HUD" method="update_lives"]
+[connection signal="shield_changed" from="Player" to="HUD" method="update_shield"]
 [connection signal="start_game" from="HUD" to="." method="_on_hud_start_game"]
 [connection signal="timeout" from="EnemyTimer" to="." method="_on_enemy_timer_timeout"]

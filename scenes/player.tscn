@@ -1,15 +1,24 @@
-[gd_scene load_steps=6 format=3 uid="uid://d2deqh7mfuhuy"]
+[gd_scene load_steps=10 format=3 uid="uid://d2deqh7mfuhuy"]
 
 [ext_resource type="Texture2D" uid="uid://bxl2phk8xmv78" path="res://assets/player_ship.png" id="1_ogmw7"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_pp2su"]
 [ext_resource type="PackedScene" uid="uid://dutk8jo11glme" path="res://scenes/bullet.tscn" id="2_5turc"]
 [ext_resource type="PackedScene" uid="uid://c10mc3b4gli04" path="res://scenes/explosion.tscn" id="4_2mhdv"]
+[ext_resource type="AudioStream" uid="uid://ba1gugs3adga4" path="res://assets/sounds/laser.ogg" id="5_fplpb"]
+[ext_resource type="AudioStream" uid="uid://ibxwdj7t21bg" path="res://assets/sounds/engine.ogg" id="6_784hh"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_igr6g"]
 radius = 30.0666
 
+[sub_resource type="Curve" id="Curve_6js27"]
+_data = [Vector2(0.0268908, 0.95577), 0.0, 0.0, 0, 0, Vector2(0.966386, 0.0877517), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_p5d0r"]
+offsets = PackedFloat32Array(0, 0.528864, 0.67784)
+colors = PackedColorArray(0.0892655, 0.326826, 0.999996, 1, 1, 0.449701, 0.611609, 1, 1, 1, 1, 1)
+
 [node name="Player" type="RigidBody2D" groups=["players"]]
-visible = false
 gravity_scale = 0.0
 contact_monitor = true
 max_contacts_reported = 1
@@ -43,6 +52,30 @@ visible = false
 [node name="InvulnerabilityTimer" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
+
+[node name="LaserSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_fplpb")
+volume_db = -10.0
+
+[node name="EngineSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_784hh")
+volume_db = -10.0
+
+[node name="Exhaust" type="CPUParticles2D" parent="."]
+show_behind_parent = true
+position = Vector2(-28, 0)
+rotation = 3.14159
+amount = 25
+lifetime = 0.2
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(1, 5)
+spread = 0.0
+gravity = Vector2(1, 1)
+initial_velocity_max = 400.0
+scale_amount_max = 8.0
+scale_amount_curve = SubResource("Curve_6js27")
+color_ramp = SubResource("Gradient_p5d0r")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="GunCooldown" to="." method="_on_gun_cooldown_timeout"]

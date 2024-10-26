@@ -1,10 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://c1cym2lgx1tup"]
+[gd_scene load_steps=16 format=3 uid="uid://c1cym2lgx1tup"]
 
 [ext_resource type="Script" path="res://scripts/enemy.gd" id="1_he1xx"]
 [ext_resource type="Texture2D" uid="uid://brccqdkni6pwp" path="res://assets/enemy_saucer.png" id="1_hh8la"]
 [ext_resource type="PackedScene" uid="uid://dlvsi5tif0uq6" path="res://scenes/enemy_paths.tscn" id="2_3cgn6"]
 [ext_resource type="PackedScene" uid="uid://4pm468tffbhc" path="res://scenes/enemy_bullet.tscn" id="2_u2ab5"]
 [ext_resource type="PackedScene" uid="uid://c10mc3b4gli04" path="res://scenes/explosion.tscn" id="4_7ybp8"]
+[ext_resource type="AudioStream" uid="uid://cakvnuk2as6uh" path="res://assets/sounds/explosion.wav" id="6_niapw"]
+[ext_resource type="AudioStream" uid="uid://b6xtr55kwoo1a" path="res://assets/sounds/enemy_laser.wav" id="7_nmcps"]
+[ext_resource type="Texture2D" uid="uid://wb1ogb7fof11" path="res://assets/corona.png" id="8_fbwwi"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_h2jch"]
 
@@ -46,6 +49,16 @@ _data = {
 "flash": SubResource("Animation_to1pi")
 }
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0omso"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_saked"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.763025, 0.058265), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_g3am2"]
+colors = PackedColorArray(0, 0, 1, 1, 1, 1, 1, 1)
+
 [node name="enemy" type="Area2D" groups=["enemies"]]
 script = ExtResource("1_he1xx")
 bullet_scene = ExtResource("2_u2ab5")
@@ -71,6 +84,27 @@ visible = false
 [node name="GunCooldown" type="Timer" parent="."]
 wait_time = 1.5
 autostart = true
+
+[node name="ExplosionSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_niapw")
+volume_db = -10.0
+
+[node name="ShootSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_nmcps")
+volume_db = -10.0
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+show_behind_parent = true
+material = SubResource("CanvasItemMaterial_0omso")
+amount = 20
+texture = ExtResource("8_fbwwi")
+emission_shape = 1
+emission_sphere_radius = 25.0
+gravity = Vector2(0, 0)
+scale_amount_min = 0.1
+scale_amount_max = 0.1
+scale_amount_curve = SubResource("Curve_saked")
+color_ramp = SubResource("Gradient_g3am2")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="GunCooldown" to="." method="_on_gun_cooldown_timeout"]

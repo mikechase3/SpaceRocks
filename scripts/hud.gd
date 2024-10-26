@@ -7,6 +7,14 @@ signal start_game
 @onready var score_label: Label = $MarginContainer/HBoxContainer/ScoreLabel
 @onready var message: Label = $VBoxContainer/Message 
 @onready var start_button: TextureButton = $VBoxContainer/StartButton 
+@onready var shield_bar = $MarginContainer/HBoxContainer/ShieldBar
+
+# Structs
+var bar_textures = {
+	"green": preload("res://assets/bar_green_200.png"),
+	"yellow": preload("res://assets/bar_yellow_200.png"),
+	"red": preload("res://assets/bar_red_200.png")
+}
 
 
 func _on_start_button_pressed() -> void:
@@ -35,5 +43,13 @@ func update_lives(value):
 	for item in 3:  # TODO exercise: make variable amount of lives.
 		lives_counter[item].visible = value > item
 	
+func update_shield(value):
+	shield_bar.texture_progress = bar_textures["green"]
+	if value < 0.4:
+		shield_bar.texture_progress = bar_textures["red"]
+	elif value < 0.7:
+		shield_bar.texture_progress = bar_textures["yellow"]
+	shield_bar.value = value
+
 func update_score(value):
 	score_label.text = str(value)

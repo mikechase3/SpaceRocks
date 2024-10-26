@@ -47,6 +47,9 @@ func _on_rock_exploded(size, radius, pos, vel):
 			var newpos = pos + dir * radius
 			var newvel = dir * vel.length() * 1.1
 			spawn_rock(size - 1, newpos, newvel)
+			
+
+
 
 func _process(delta):
 	if not playing:
@@ -63,6 +66,7 @@ func _ready():
 func game_over():
 	playing = false
 	$HUD.game_over()
+	$Music.stop()
 	
 
 func new_game():
@@ -75,6 +79,7 @@ func new_game():
 	$Player.reset()
 	await $HUD/Timer.timeout
 	playing = true
+	$Music.play()
 	
 func new_level():
 	level += 1

@@ -15,7 +15,12 @@ var target = null
 func _on_body_entered(body):
 	if body.is_in_group("rocks"):
 		return
-	explode()
+	elif body.is_in_group("players"):
+		#print("At Enemey._on_body_entered: Body's shield is %s before subtracting" % body.shield)
+		body.shield = body.shield - 50
+		#print("At Enemey._on_body_entered: Body's shield is %s after subtracting" % body.shield)
+
+		explode()
 
 
 func _on_gun_cooldown_timeout() -> void:

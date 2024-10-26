@@ -8,7 +8,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_igr6g"]
 radius = 30.0666
 
-[node name="Player" type="RigidBody2D"]
+[node name="Player" type="RigidBody2D" groups=["players"]]
 visible = false
 gravity_scale = 0.0
 contact_monitor = true

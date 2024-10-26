@@ -8,6 +8,7 @@ signal shield_changed
 @export var fire_rate: float = 0.25
 @export var max_shield = 100.0
 @export var shield_regen = 5.0
+@export var damage = 15  # enemy damage only. Rock is based on size in _on_body_ent()
 
 enum {INIT, ALIVE, INVULNERABLE, DEAD}
 var can_shoot = true
@@ -15,7 +16,7 @@ var state = INIT
 var thrust = Vector2.ZERO
 var rotation_dir = 0
 var screensize = Vector2.ZERO  # Book/Slide says Vector.ZERO
-var shield = 0: set = set_shield
+var shield = 1: set = set_shield
 
 var reset_pos = false 
 # When value of lives changes, set_lives() will be called -> A "Setter Function"
@@ -38,9 +39,14 @@ func _integrate_forces(physics_state):
 
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("rocks"):
+		#print("Player._on_body_entered: Body's shield is %s before subtracting" % shield)
+		shield -= body.size * 25
+		#print("Player._on_body_entered: Body's shield is %s after subtracting" % shield)
+
 		body.explode()
-		lives -= 1
-		explode()
+		#lives -= 1
+		#explode()
+		
 	#if body.is_in_group("enemies"):  # enemy isn't a body... huh.
 		##body.explode()
 		#lives -=1
@@ -57,7 +63,7 @@ func _on_invulnerability_timer_timeout() -> void:
 
 func _process(delta):
 	get_input()
-	#shield += shield_regen * delta
+	shield += shield_regen * delta
 
 func _ready():
 	change_state(ALIVE)
@@ -135,9 +141,12 @@ func set_lives(value):
 		change_state(DEAD)
 	else:
 		change_state(INVULNERABLE)
+	shield = max_shield  # when player's shield runs out and they lose a life.
+
 		
 	
 func set_shield(value):
+	#print("set shield to %s" % value)
 	value = min(value, max_shield)
 	shield = value
 	shield_changed.emit(shield / max_shield)
